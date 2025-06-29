@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
-import AccountAppBar from "../AppBars/accountAppBar";
-import OrdersService from "../service/orderService";
-import ProductsService from "../service/productsService";
+import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardMedia,
-  IconButton,
-  Typography,
+  Typography
 } from "@mui/material";
-import DeleteOutlineOutlined from "@mui/icons-material/DeleteOutlineOutlined";
 import { enqueueSnackbar } from "notistack";
+import { useEffect, useState } from "react";
 import AlertDialog from "../Alert/AlertDialog";
+import AccountAppBar from "../AppBars/homeAppBar";
+import OrdersService from "../service/orderService";
+import ProductsService from "../service/productsService";
+
 
 function Orders() {
   const [orderByUserIdData, setOrderByUserIdData] = useState([]);
@@ -57,7 +58,7 @@ function Orders() {
         enqueueSnackbar("Lütfen giriş yapınız.", { variant: "error" });
       }
     } catch (error) {
-      enqueueSnackbar("Sipariş bilgisi çekilirken hata: " + error.message, {
+      console.log("Sipariş bilgisi çekilirken hata: " + error.message, {
         variant: "error",
       });
     }
@@ -79,102 +80,147 @@ function Orders() {
     }
   };
 
-  return (
-    <>
-      <AlertDialog
-        open={deleteAlertOpen}
-        setOpen={setDeleteAlertOpen}
-        handleAggree={handleDeleteOrder}
-        message={`Order "${
-          orderByUserIdData.find((order) => order.orderId === selectedOrderId)
-            ?.orderId
-        }" will delete?`}
-      />
-      <AccountAppBar />
-      {orderByUserIdData.map((order) => (
-        <Card
-          key={order.orderId}
+ return (
+  <>
+    <AlertDialog
+      open={deleteAlertOpen}
+      setOpen={setDeleteAlertOpen}
+      handleAggree={handleDeleteOrder}
+      message={`Order "${
+        orderByUserIdData.find((order) => order.orderId === selectedOrderId)
+          ?.orderId
+      }" will delete?`}
+    />
+    <AccountAppBar />
+    <Box sx={{ p: 3 }}>
+      {orderByUserIdData.length === 0 ? (
+        <Box
           sx={{
+            height: "60vh",
             display: "flex",
             flexDirection: "column",
-            maxWidth: 1250,
-            marginTop: "20px",
-            marginLeft: "100px",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "text.secondary",
           }}
         >
-          <CardContent>
-            <Typography component="div" variant="h5">
-              Sipariş Tarihi: {formatDate(order.orderDate)}
-            </Typography>
-            <Typography
-              variant="subtitle1"
-              color="text.secondary"
-              component="div"
-            >
-              Toplam tutar: {order.totalAmount} TL
-            </Typography>
-          </CardContent>
-          {order.products.map((product) => (
-            <Box
-              key={product.productId}
-              sx={{ display: "flex", marginTop: "20px" }}
-            >
-              <CardMedia
-                component="img"
-                sx={{ width: 150 }}
-                image={product.productImages[0]}
-                alt={product.productName}
-              />
-              <Box sx={{ display: "flex", flexDirection: "column" , marginTop:'70px'}}>
-                <CardContent>
-                  <Typography component="div" variant="h5">
+          <img
+            src="https://img.freepik.com/vector-premium/ilustracion-vectorial-sobre-concepto-no-encuentran-articulos-o-no-encuentran-resultados_675567-6665.jpg"
+            alt="Sipariş Yok"
+            style={{ width: 150, marginBottom: 20, opacity: 0.5 }}
+          />
+          <Typography variant="h6" color="text.secondary">
+            Henüz siparişiniz bulunmamaktadır.
+          </Typography>
+        </Box>
+      ) : (
+        orderByUserIdData.map((order) => (
+          <Card
+            key={order.orderId}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              my: 2,
+              p: 1.5,
+              borderRadius: 2,
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+              backgroundColor: "#fafafa",
+            }}
+          >
+            <CardContent sx={{ height: 30 }}>
+              <Typography variant="body1" fontWeight={600} sx={{ marginTop: -2.5 }}>
+                Sipariş Tarihi: {formatDate(order.orderDate)}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" mt={0.5}>
+                Toplam Tutar: <strong>{order.totalAmount.toFixed(2)} TL</strong>
+              </Typography>
+            </CardContent>
+
+            {order.products.map((product) => (
+              <Box
+                key={product.productId}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mt: 2,
+                  px: 2,
+                  py: 1,
+                  border: "1px solid #e0e0e0",
+                  borderRadius: 2,
+                  backgroundColor: "white",
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  sx={{
+                    width: 120,
+                    height: 120,
+                    objectFit: "cover",
+                    borderRadius: 1,
+                  }}
+                  image={product.productImages[0]}
+                  alt={product.productName}
+                />
+                <Box sx={{ flex: 1, ml: 2 }}>
+                  <Typography variant="subtitle2" fontWeight={600} noWrap>
                     {product.productName}
                   </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    color="text.secondary"
-                    component="div"
-                  >
+                  <Typography variant="body2" color="text.secondary" noWrap>
                     {product.description}
                   </Typography>
-                </CardContent>
+                </Box>
+                <Typography fontWeight="bold" sx={{ minWidth: 100, textAlign: "right" }}>
+                  {product.price.toFixed(2)} TL
+                </Typography>
               </Box>
-              <Box>
-                <CardContent sx={{ marginLeft: "100px" , marginTop:'80px'}}>
-                  <strong>{product.price.toFixed(2)} TL</strong>
-                </CardContent>
-              </Box>
+            ))}
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mt: 1,
+              }}
+            >
+              <Typography variant="body2" fontWeight={600}>
+                {order.status === "DELIVERED" ? (
+                  <span style={{ color: "green" }}>Teslim Edildi</span>
+                ) : order.status === "PREPARING" ? (
+                  <span style={{ color: "#ff9800" }}>Hazırlanıyor</span>
+                ) : order.status === "CANCELLED" ? (
+                  <span style={{ color: "red" }}>İptal Edildi</span>
+                ) : (
+                  <span style={{ color: "#2196F3" }}>Beklemede</span>
+                )}
+              </Typography>
+
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteOutlineOutlined />}
+                onClick={() => handleDeleteOpen(order.orderId)}
+                sx={{
+                  fontWeight: "bold",
+                  borderRadius: 2,
+                  fontSize: "0.75rem",
+                  px: 2,
+                  py: 0.5,
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 0, 0, 0.04)",
+                  },
+                }}
+              >
+                İptal Et
+              </Button>
             </Box>
-          ))}
-          <Box sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}>
-            <IconButton
-              sx={{ marginLeft: "auto" , marginRight:'100px' ,marginTop:'-250px'}}
-              onClick={() => handleDeleteOpen(order.orderId)}
-            >
-              İptal
-              <DeleteOutlineOutlined />
-            </IconButton>
-            <Typography
-              variant="subtitle1"
-              color="text.secondary"
-              component="div"
-              sx={{marginTop:'-250px', marginRight:'50px'}}
-            >
-              {order.status === "DELIVERED" ? (
-                <span style={{ color: "green" }}>Teslim Edildi</span>
-              ) : order.status === "PREPARING" ? (
-                <span style={{ color: "yellow" }}>Hazırlanıyor</span>
-              ) : order.status === "CANCELLED" ? (
-                <span style={{ color: "red" }}>İptal Edildi</span>
-              ) : (
-                <span style={{ color: "blue" }}>Beklemede</span>
-              )}
-            </Typography>
-          </Box>
-        </Card>
-      ))}
-    </>
-  );
+          </Card>
+        ))
+      )}
+    </Box>
+  </>
+);
+
 }
 
 export default Orders;

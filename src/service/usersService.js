@@ -80,6 +80,25 @@ const UsersService = {
     }
   },
 
+  forgotResetPassword: async (eposta, newPassword, securityCode) => {
+  try {
+    const response = await axios.put(
+        `${API_BASE_URL_2}/forgot/resetPassword/${eposta}`,
+      null,
+      {
+        params: { newPassword: newPassword, securityCode: securityCode },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `E-posta adresi "${eposta}" olan kullanıcının şifresini güvenlik kodu ile sıfırlarken hata:`,
+      error
+    );
+    throw error;
+  }
+},
+
   resetEmail: async (id, newEmail) => {
     try {
       const response = await axios.put(`${API_BASE_URL}/resetEmail/${id}`, null, {

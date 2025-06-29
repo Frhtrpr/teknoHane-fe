@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
 import {
-  Typography,
-  Grid,
   Card,
   CardContent,
   CardMedia,
   CircularProgress,
+  Grid,
+  Typography,
 } from "@mui/material";
-import styles from "../css/home.css";
-import HomeAppBar from "../AppBars/homeAppBar";
-import CategoriesService from "../service/categoriesService";
 import { styled } from "@mui/system";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import HomeAppBar from "../AppBars/homeAppBar";
+import styles from "../css/home.css";
+import CategoriesService from "../service/categoriesService";
 
 const StyledCard = styled("div")({
   margin: "0 auto",
@@ -78,9 +78,6 @@ const Home = () => {
   return (
     <div className={styles["home-container"]}>
       <HomeAppBar />
-      <Link style={{ marginLeft: "1370px" }} to={"/admin-records"}>
-        Admin Records
-      </Link>
       <StyledCard>
         <StyledMedia
           component="img"
@@ -89,42 +86,64 @@ const Home = () => {
           title="Placeholder Image"
         />
       </StyledCard>
-      <div className={styles["content"]}>
-        <Grid container spacing={2}>
-          {categories.map((category) => (
-            <Grid
-              item
-              key={category.categoryId}
-              xs={12}
-              sm={6}
-              md={4}
-              lg={3}
-              style={{ marginLeft: "90px" }}
-            >
-              <Link to={`/${category.categoryName}/${category.categoryId}`}>
-                <Card>
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={category.categoryImages[0]}
-                    alt={category.categoryName}
-                  />
-                  <CardContent>
-                    <Typography
-                      gutterBottom
-                      variant="h5"
-                      component="div"
-                    >
-                      {category.categoryName}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Link>
-              <br />
-            </Grid>
-          ))}
-        </Grid>
-      </div>
+     <div className={styles["content"]}>
+  <Grid container spacing={2} sx={{ paddingX: 3 ,marginBottom:3 ,marginTop:-8}}>
+    {categories.map((category) => (
+    <Grid item key={category.categoryId} xs={12} sm={6} md={4} lg={3}>
+  <Link
+    to={`/${category.categoryName}/${category.categoryId}`}
+    style={{ textDecoration: 'none' }}
+  >
+    <Card
+      style={{
+        transition: 'transform 0.2s, box-shadow 0.2s',
+        cursor: 'pointer',
+        height: '100%',
+        border: '1px solid #ddd',  
+    borderRadius: '4px',       
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'scale(1.02)';
+        e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = 'scale(1)';
+        e.currentTarget.style.boxShadow = 'none';
+      }}
+    >
+      <CardMedia
+        component="img"
+        height="200"
+        image={category.categoryImages[0]}
+        alt={category.categoryName}
+  style={{
+    height: 160, 
+    objectFit: 'contain', 
+    padding: '10px' 
+  }}      />
+      <CardContent>
+        <Typography
+          gutterBottom
+          variant="h6"
+          component="div"
+          style={{
+            textAlign: 'center',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {category.categoryName}
+        </Typography>
+      </CardContent>
+    </Card>
+  </Link>
+</Grid>
+
+    ))}
+  </Grid>
+</div>
+
     </div>
   );
 };

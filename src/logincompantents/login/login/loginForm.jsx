@@ -1,23 +1,20 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../../../service/authService.js";
 import BackGround from '../../../backGroundColor/auth-backgroundColor';
+import { loginUser } from "../../../service/authService.js";
 
-import {
-  Button,
-  TextField,
-  Typography,
-  Container,
-  IconButton,
-  InputAdornment,
-  Grid,
-} from "@mui/material";
 import styled from "@emotion/styled";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import StoreIcon from "@mui/icons-material/Store";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GoogleIcon from "@mui/icons-material/Google";
-import HomeAppBar from "../../../AppBars/loginAppBar.jsx"
+import {
+  Button,
+  Container,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography
+} from "@mui/material";
+import HomeAppBar from "../../../AppBars/loginAppBar.jsx";
 //Approve and error message
 import { useSnackbar } from "notistack";
 
@@ -50,24 +47,10 @@ const StyledTextField = styled(TextField)`
 const StyledButton = styled(Button)`
   && {
     margin-top: 20px;
-  }
-`;
-
-const SocialButton = styled(Button)`
-  && {
     text-transform: none;
-    margin-bottom: 12px;
-    padding: 10px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  && small {
-    margin-left: 5px;
   }
 `;
+
 
 const ForgotPasswordLink = styled.a`
   color: black;
@@ -183,39 +166,6 @@ export default function LoginForm() {
             >
               Giriş Yap
             </StyledButton>
-
-            <Grid container spacing={2} sx={{ marginTop: "20px" }}>
-              <Grid item xs={6}>
-                <SocialButton
-                  fullWidth
-                  variant="outlined"
-                  startIcon={<FacebookIcon style={{ marginLeft: "15px" }} />}
-                  sx={{ color: "#1877f2", borderColor: "#1877f2" }}
-                >
-                  <Grid container alignItems="center" justifyContent="center">
-                    <Grid item>Facebook</Grid>
-                    <Grid item xs={12}>
-                      <small>ile Giriş Yap</small>
-                    </Grid>
-                  </Grid>
-                </SocialButton>
-              </Grid>
-              <Grid item xs={6}>
-                <SocialButton
-                  fullWidth
-                  variant="outlined"
-                  startIcon={<GoogleIcon style={{ marginLeft: "15px" }} />}
-                  sx={{ color: "#db4437", borderColor: "#db4437" }}
-                >
-                  <Grid container alignItems="center" justifyContent="center">
-                    <Grid item>Google</Grid>
-                    <Grid item xs={12}>
-                      <small>ile Giriş Yap</small>
-                    </Grid>
-                  </Grid>
-                </SocialButton>
-              </Grid>
-            </Grid>
           </StyledForm>
 
           <Typography

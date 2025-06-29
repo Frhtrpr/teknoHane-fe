@@ -1,49 +1,48 @@
-import React, { useState, useEffect } from "react";
-import UsersService from "../service/usersService";
-import HomeAppBar from "../AppBars/homeAppBar";
-import { useSnackbar } from "notistack";
 import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Radio,
+  RadioGroup,
   Table,
   TableBody,
   TableCell,
   TableRow,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   TextField,
-  Button,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  Grid,
-  FormControlLabel,
-  Radio,
   Typography,
-  InputAdornment,
-  Box,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useState } from "react";
+import HomeAppBar from "../AppBars/homeAppBar";
 import "../css/profile.css";
+import UsersService from "../service/usersService";
 
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 //Icons
 import {
-  PasswordOutlined,
   Visibility,
-  VisibilityOff,
+  VisibilityOff
 } from "@mui/icons-material";
+import BoyIcon from "@mui/icons-material/Boy";
+import CakeOutlinedIcon from "@mui/icons-material/CakeOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
-import BoyIcon from "@mui/icons-material/Boy";
-import GirlIcon from "@mui/icons-material/Girl";
 import EnhancedEncryptionOutlinedIcon from "@mui/icons-material/EnhancedEncryptionOutlined";
-import CakeOutlinedIcon from "@mui/icons-material/CakeOutlined";
+import GirlIcon from "@mui/icons-material/Girl";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import TransgenderOutlinedIcon from "@mui/icons-material/TransgenderOutlined";
 import { useNavigate } from "react-router";
 
@@ -140,6 +139,8 @@ function Profile() {
         });
         setShowEmailEdit(false);
         localStorage.removeItem("jwtToken");
+        localStorage.removeItem("firstName");
+        localStorage.removeItem("lastName");
         navigate("/giris");
         window.location.reload();
       } catch (error) {
@@ -351,58 +352,60 @@ function Profile() {
     );
   }
 
-  function BirthdayEditPopup() {
-    const [newBirthday, setNewBirthday] = React.useState(userData.birthday);
+function BirthdayEditPopup() {
+  const [birthday, setBirthday] = React.useState(userData.birthday);
 
-    const handleUpdateBirthday = async () => {
-      try {
-        await UsersService.updateUser(userData.id, { birthday: newBirthday });
-        enqueueSnackbar("Doğum tarihiniz güncellendi", { variant: "success" });
-        setShowBirthdayEdit(false);
-      } catch (error) {
-        enqueueSnackbar("Doğum tarihiniz güncellenemedi", { variant: "error" });
-        console.log("Doğum tarihi güncellerken oluşan hata", error);
-      }
-    };
-    return (
-      <>
-        <Box sx={{ minHeight: 400, flexGrow: 1, maxWidth: 400 }}>
-          <Dialog
-            open={showBirthdayEdit}
-            onClose={() => setShowBirthdayEdit(false)}
-            fullWidth={true}
-            maxWidth={"md"}
-          >
-            <DialogTitle>Doğum tarihini güncelle</DialogTitle>
-            <DialogContent>
-              {showBirthdayEdit && (
-                <>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={["DatePicker"]}>
-                      <DatePicker
-                        label="Doğum Tarihi"
-                        value={newBirthday}
-                        onChange={(date) => setNewBirthday(date)}
-                        dateFormat="dd/MM/yyyy"
-                        renderInput={(params) => (
-                          <TextField {...params} fullWidth variant="outlined" />
-                        )}
-                        required
-                      />
-                    </DemoContainer>
-                  </LocalizationProvider>
-                </>
-              )}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setShowBirthdayEdit(false)}>Kapat</Button>
-              <Button onClick={handleUpdateBirthday}>Güncelle</Button>
-            </DialogActions>
-          </Dialog>
-        </Box>
-      </>
-    );
-  }
+  const handleUpdateBirthday = async () => {
+    try {
+      await UsersService.updateUser(userData.id, { birthday: birthday });
+      enqueueSnackbar("Doğum tarihiniz güncellendi", { variant: "success" });
+      setShowBirthdayEdit(false);
+      fetchUserInfo();
+    } catch (error) {
+      enqueueSnackbar("Doğum tarihiniz güncellenemedi", { variant: "error" });
+      console.log("Doğum tarihi güncellerken oluşan hata", error);
+    }
+  };
+
+  return (
+    <Box sx={{ minHeight: 200, maxHeight:500,flexGrow: 1, maxWidth: 400 }}>
+      <Dialog
+        open={showBirthdayEdit}
+        onClose={() => setShowBirthdayEdit(false)}
+        fullWidth={true}
+        maxWidth={"md"}
+      >
+        <DialogTitle>Doğum tarihini güncelle</DialogTitle>
+        <DialogContent>
+          {showBirthdayEdit && (
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  label="Doğum Tarihi"
+                  value={birthday}
+                  onChange={(date) => {
+                    if (date) {
+                      setBirthday(date);
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} fullWidth variant="outlined" />
+                  )}
+                  required
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowBirthdayEdit(false)}>Kapat</Button>
+          <Button onClick={handleUpdateBirthday}>Güncelle</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
+}
+
 
   const PasswordEditPopup = () => {
     const [newPassword, setNewPassword] = React.useState("");

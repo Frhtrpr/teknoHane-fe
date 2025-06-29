@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+import styled from "@emotion/styled";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Button,
-  Typography,
   Container,
-  TextField,
-  InputAdornment,
   IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
 } from "@mui/material";
-import styled from "@emotion/styled";
-import UsersService from "../../service/usersService";
 import { useSnackbar } from "notistack";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import HomeAppBar from "../../AppBars/homeAppBar";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import HomeAppBar from "../../AppBars/homeAppBar";
+import UsersService from "../../service/usersService";
 
 const StyledContainer = styled(Container)`
   display: flex;
@@ -50,6 +50,7 @@ const StyledButton = styled(Button)`
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [securityCode,setSecurityCode] = useState(null)
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
@@ -81,8 +82,15 @@ export default function ForgotPasswordForm() {
         });
         return;
       }
+          
+      if (!/^\d{6}$/.test(securityCode)) {
+      enqueueSnackbar("Güvenlik kodu 6 haneli ve sadece rakamlardan oluşmalıdır.", {
+        variant: "error",
+      });
+      return;
+    }
 
-      await UsersService.resetPassword(email, password);
+      await UsersService.forgotResetPassword(email, password,securityCode);
 
       enqueueSnackbar("Şifreniz başarıyla değiştirildi.", {
         variant: "success",
@@ -91,6 +99,7 @@ export default function ForgotPasswordForm() {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
+      setSecurityCode(null)
     } catch (error) {
       console.error("Failed to update password:", error);
       enqueueSnackbar(
@@ -130,6 +139,7 @@ export default function ForgotPasswordForm() {
               autoComplete="email"
               autoFocus
               value={email}
+              size="small"
               onChange={(e) => setEmail(e.target.value)}
             />
             <StyledTextField
@@ -143,6 +153,8 @@ export default function ForgotPasswordForm() {
               type={showPassword ? "text" : "password"}
               autoComplete="new-password"
               value={password}
+              size="small"
+              sx={{marginTop:-0.5}}
               onChange={(e) => setPassword(e.target.value)}
               InputProps={{
                 endAdornment: (
@@ -169,6 +181,8 @@ export default function ForgotPasswordForm() {
               type={showConfirmPassword ? "text" : "password"}
               autoComplete="new-password"
               value={confirmPassword}
+              size="small"
+              sx={{marginTop:-0.5}}
               onChange={(e) => setConfirmPassword(e.target.value)}
               InputProps={{
                 endAdornment: (
@@ -184,6 +198,25 @@ export default function ForgotPasswordForm() {
                 ),
               }}
             />
+            <StyledTextField
+  variant="outlined"
+  margin="normal"
+  required
+  id="securityCode"
+  label="Güvenlik Kodu"
+  name="securityCode"
+  value={securityCode}
+  onChange={(e) => setSecurityCode(e.target.value)}
+  size="small"
+  sx={{
+    width: "150px",
+    margin: "10px auto",   
+    display: "block",     
+    marginTop:-0.5
+  }}
+  inputProps={{ maxLength: 6, inputMode: "numeric", pattern: "[0-9]*" }}
+/>
+
             <StyledButton
               type="submit"
               fullWidth

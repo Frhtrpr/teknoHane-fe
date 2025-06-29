@@ -1,39 +1,38 @@
-import * as React from "react";
-import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
+import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+import MuiDrawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import { styled, useTheme } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import * as React from "react";
 
+import { TextField } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { Link } from "react-router-dom";
 import Menu from "@mui/material/Menu";
-import Avatar from "@mui/material/Avatar";
-import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { TextField } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
+import { Link, useNavigate } from "react-router-dom";
 //Icons
-import CommentIcon from "@mui/icons-material/Comment";
-import StarRateIcon from "@mui/icons-material/StarRate";
-import DiscountIcon from "@mui/icons-material/Discount";
-import Inventory2Icon from "@mui/icons-material/Inventory2";
-import PermIdentityIcon from "@mui/icons-material/PermIdentity";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import SearchIcon from "@mui/icons-material/Search";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import CommentIcon from "@mui/icons-material/Comment";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import DiscountIcon from "@mui/icons-material/Discount";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import MenuIcon from "@mui/icons-material/Menu";
+import PermIdentityIcon from "@mui/icons-material/PermIdentity";
+import SearchIcon from "@mui/icons-material/Search";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import StarRateIcon from "@mui/icons-material/StarRate";
 
 const pages = ["Çok Satanlar", "Flaş Ürünler","Favorilerim"];
 const settings = [
@@ -141,6 +140,12 @@ export default function MiniDrawer() {
     setAnchorElUser(null);
   };
 
+  
+  const handlePageItemClick = (page) => {
+    const formattedPage = page.replace(/\s+/g, "-").toLowerCase();
+    navigate(`/${formattedPage}`);
+  };
+
   const handleMenuItemClick = (url) => {
     if (url === "/profil") {
       navigate(url);
@@ -228,7 +233,7 @@ export default function MiniDrawer() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page}  onClick={() => handlePageItemClick(page)}>
                   <Typography textAlign="center" sx={{ textTransform: "none" }}>
                     {page}
                   </Typography>

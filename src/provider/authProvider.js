@@ -18,6 +18,8 @@ const AuthProvider = ({ children }) => {
     } else {
       delete axios.defaults.headers.common["Authorization"];
       localStorage.removeItem('jwtToken')
+              localStorage.removeItem("firstName");
+        localStorage.removeItem("lastName");
     }
   }, [token]);
 

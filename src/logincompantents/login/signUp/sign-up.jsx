@@ -1,46 +1,43 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 //import bcrypt from "bcryptjs";
-import BackGround from "../../../backGroundColor/auth-backgroundColor";
+import styled from "@emotion/styled";
 import {
   Button,
-  TextField,
-  Typography,
-  Container,
-  IconButton,
-  InputAdornment,
-  Grid,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
   Checkbox,
+  Container,
   //AppBar,
   //Tabs,
   //Tab,
   Dialog,
-  DialogTitle,
   DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography,
 } from "@mui/material";
-import styled from "@emotion/styled";
+import BackGround from "../../../backGroundColor/auth-backgroundColor";
 import UsersService from "../../../service/usersService";
 //Icons
-import StoreIcon from "@mui/icons-material/Store";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GoogleIcon from "@mui/icons-material/Google";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import StoreIcon from "@mui/icons-material/Store";
 //import HandshakeIcon from "@mui/icons-material/Handshake";
 import CloseIcon from "@mui/icons-material/Close";
 //Approve and Error message
 import { useSnackbar } from "notistack";
 //Google
-import { GoogleLogin } from "react-google-login";
-import HomeAppBar from "../../../AppBars/loginAppBar";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import HomeAppBar from "../../../AppBars/loginAppBar";
 
 const StyledContainer = styled(Container)`
   
@@ -94,23 +91,37 @@ const SocialButton = styled(Button)`
 `;
 
 export default function LoginForm() {
+  const [firstName,setFirstName] = React.useState("");
+  const [lastName,setLastName] = React.useState("")
   const [eposta, setEposta] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [phone, setPhone] = React.useState("");
   const [gender, setGender] = useState("male");
   const [birthday, setBirthday] = useState(null);
+  const [securityCode, setSecurityCode] = useState("");
   const [agreementChecked, setAgreementChecked] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [epostaError, setEpostaError] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
-  const clientId =
-    "700211963251-rm90nnjq8uekcvr5ltif6g65vieka13n.apps.googleusercontent.com";
+
   const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
+
+        const nameRegex = /^[A-Za-zÇŞĞÜÖİçşğüöıİ]{3,}$/;
+
+  if (!nameRegex.test(firstName)) {
+    enqueueSnackbar("İsim en az 3 harf olmalı ve sadece harflerden oluşmalıdır.", { variant: "error" });
+    return;
+  }
+
+  if (!nameRegex.test(lastName)) {
+    enqueueSnackbar("Soyisim en az 3 harf olmalı ve sadece harflerden oluşmalıdır.", { variant: "error" });
+    return;
+  }
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(eposta)) {
         setEpostaError(true);
@@ -132,7 +143,6 @@ export default function LoginForm() {
         return;
       }
 
-      // Telefon numarasının uzunluğunu kontrol et
       if (phone.length !== 11 || isNaN(phone)) {
         enqueueSnackbar("Telefon numarası 11 haneli bir rakam olmalıdır.", {
           variant: "error",
@@ -140,7 +150,12 @@ export default function LoginForm() {
         return;
       }
 
-      // Kullanıcıyı veritabanına kaydet
+      if (!/^\d{6}$/.test(securityCode)) {
+  enqueueSnackbar("Güvenlik kodu 6 haneli ve sadece rakamlardan oluşmalıdır.", {
+    variant: "error",
+  });
+  return;
+}
       const newUser = {
         eposta,
         password,
@@ -195,6 +210,37 @@ export default function LoginForm() {
           </StyledTypography>
 
           <StyledForm onSubmit={handleSignUp}>
+<Grid container spacing={2}>
+  <Grid item xs={6}>
+    <StyledTextField
+      variant="outlined"
+      margin="normal"
+      required
+      fullWidth
+      id="firstName"
+      label="İsim"
+      name="firstName"
+      autoFocus
+      value={firstName}
+      onChange={(e) => setFirstName(e.target.value)}
+      size="small"
+    />
+  </Grid>
+  <Grid item xs={6}>
+    <StyledTextField
+      variant="outlined"
+      margin="normal"
+      required
+      fullWidth
+      id="lastName"
+      label="Soyisim"
+      name="lastName"
+      value={lastName}
+      onChange={(e) => setLastName(e.target.value)}
+      size="small"
+    />
+  </Grid>
+</Grid>
             <StyledTextField
               variant="outlined"
               margin="normal"
@@ -204,10 +250,10 @@ export default function LoginForm() {
               label="E-posta"
               name="eposta"
               autoComplete="eposta"
-              autoFocus
               value={eposta}
               onChange={(e) => setEposta(e.target.value)}
               error={epostaError}
+              size="small"
             />
             <StyledTextField
               variant="outlined"
@@ -220,6 +266,7 @@ export default function LoginForm() {
               id="password"
               autoComplete="current-password"
               value={password}
+              size="small"
               onChange={(e) => setPassword(e.target.value)}
               InputProps={{
                 endAdornment: (
@@ -246,89 +293,75 @@ export default function LoginForm() {
                     }
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} fullWidth variant="outlined" />
+                    <TextField {...params} fullWidth variant="outlined"        size="small"
+/>
                   )}
                   required
                 />
               </DemoContainer>
             </LocalizationProvider>
 
-            <StyledTextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="phone"
-              label="Telefon Numarası"
-              name="phone"
-              autoComplete="tel"
-              autoFocus
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <FormControl component="fieldset" fullWidth>
-                  <FormLabel component="legend">
-                    Cinsiyet(İsteğe bağlı)
-                  </FormLabel>
-                  <RadioGroup
-                    aria-label="gender"
-                    name="gender"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                    row // Display options horizontally
-                  >
-                    <Grid container spacing={2}>
-                      <Grid item xs={3}>
-                        <FormControlLabel
-                          value="male"
-                          control={<Radio />}
-                          label={
-                            <Typography sx={{ fontSize: "14px" }}>
-                              Erkek
-                            </Typography>
-                          }
-                        />
-                      </Grid>
-                      <Grid item xs={3}>
-                        <FormControlLabel
-                          value="female"
-                          control={<Radio />}
-                          label={
-                            <Typography sx={{ fontSize: "14px" }}>
-                              Kadın
-                            </Typography>
-                          }
-                        />
-                      </Grid>
-                      <Grid item xs={3}>
-                        <FormControlLabel
-                          value="other"
-                          control={<Radio />}
-                          label={
-                            <Typography sx={{ fontSize: "14px" }}>
-                              Diğer
-                            </Typography>
-                          }
-                        />
-                      </Grid>
-                      <Grid item xs={3}>
-                        <FormControlLabel
-                          value=""
-                          control={<Radio />}
-                          label={
-                            <Typography sx={{ fontSize: "12px" }}>
-                              Belirtmek istemiyorum
-                            </Typography>
-                          }
-                        />
-                      </Grid>
-                    </Grid>
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-            </Grid>
+          <Grid container spacing={2}>
+  <Grid item xs={8}>
+    <StyledTextField
+      variant="outlined"
+      margin="normal"
+      required
+      fullWidth
+      id="phone"
+      label="Telefon Numarası"
+      name="phone"
+      autoComplete="tel"
+      size="small"
+      value={phone}
+      onChange={(e) => setPhone(e.target.value)}
+    />
+  </Grid>
+  <Grid item xs={4}>
+    <StyledTextField
+      variant="outlined"
+      margin="normal"
+      required
+      fullWidth
+      id="securityCode"
+      label="Güvenlik Kodu"
+      name="securityCode"
+      size="small"
+      value={securityCode}
+      onChange={(e) => setSecurityCode(e.target.value)}
+    />
+  </Grid>
+</Grid>
+
+           <Grid container spacing={2}>
+  <Grid item xs={12}>
+    <FormControl component="fieldset" fullWidth>
+      <FormLabel component="legend" sx={{ textAlign: "center" }}>
+        Cinsiyet
+      </FormLabel>
+      <RadioGroup
+        aria-label="gender"
+        name="gender"
+        value={gender}
+        onChange={(e) => setGender(e.target.value)}
+        row
+        sx={{ justifyContent: "center", display: "flex" }} // ortalama için
+      >
+        <FormControlLabel
+          value="male"
+          control={<Radio />}
+          label={<Typography sx={{ fontSize: "14px" }}>Erkek</Typography>}
+        />
+        <FormControlLabel
+          value="female"
+          control={<Radio />}
+          label={<Typography sx={{ fontSize: "14px" }}>Kadın</Typography>}
+        />
+      </RadioGroup>
+    </FormControl>
+  </Grid>
+</Grid>
+
 
             <Dialog open={openDialog} onClose={handleCloseDialog}>
               <DialogTitle sx={{ marginLeft: "170px", fontSize: "23px" }}>
@@ -381,48 +414,6 @@ export default function LoginForm() {
             >
               Üye ol
             </StyledButton>
-
-            <Grid container spacing={2} sx={{ marginTop: "20px" }}>
-              <Grid item xs={6}>
-                <SocialButton
-                  fullWidth
-                  variant="outlined"
-                  startIcon={<FacebookIcon style={{ marginLeft: "15px" }} />}
-                  sx={{ color: "#1877f2", borderColor: "#1877f2" }}
-                >
-                  <Grid container alignItems="center" justifyContent="center">
-                    <Grid item>Facebook</Grid>
-                    <Grid item xs={12}>
-                      <small>ile Giriş Yap</small>
-                    </Grid>
-                  </Grid>
-                </SocialButton>
-              </Grid>
-              <Grid item xs={6}>
-                <div>
-                  <GoogleLogin
-                    clientId={clientId}
-                    onSuccess={onSuccess}
-                    onFailure={onFailure}
-                    cookiePolicy={"single_host_origin"}
-                    isSignedIn={true}
-                  ></GoogleLogin>
-                </div>
-                {/*<SocialButton
-                  fullWidth
-                  variant="outlined"
-                  startIcon={<GoogleIcon style={{ marginLeft: "15px" }} />}
-            sx={{ color: "#db4437", borderColor: "#db4437" }}
-            >
-                  <Grid container alignItems="center" justifyContent="center">
-                    <Grid item>Google</Grid>
-                    <Grid item xs={12}>
-                      <small>ile Giriş Yap</small>
-                    </Grid>
-            </Grid>
-                </SocialButton>*/}
-              </Grid>
-            </Grid>
           </StyledForm>
 
           <Typography

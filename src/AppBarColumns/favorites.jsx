@@ -1,30 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { styled } from "@mui/material/styles";
+import {
+  AddShoppingCartOutlined,
+  RemoveCircleOutlineOutlined
+} from "@mui/icons-material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { styled } from "@mui/material/styles";
 import Tooltip from "@mui/material/Tooltip";
-import HomeAppBar from "../AppBars/homeAppBar";
-import FavoritesService from "../service/favoritesService";
-import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import { enqueueSnackbar } from "notistack";
-import {
-  AddShoppingCart,
-  AddShoppingCartOutlined,
-  RemoveCircleOutlineOutlined,
-} from "@mui/icons-material";
-import AlertDialog from "../Alert/AlertDialog";
-import ProductsService from "../service/productsService";
-import CartsService from "../service/cartService";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import AlertDialog from "../Alert/AlertDialog";
+import HomeAppBar from "../AppBars/homeAppBar";
+import CartsService from "../service/cartService";
+import FavoritesService from "../service/favoritesService";
+import ProductsService from "../service/productsService";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -44,7 +43,14 @@ function Favorites() {
   const [deleteAlertOpen, setDeleteAlertOpen] = React.useState(false);
   const [selectedFavoriteId, setSelectedfavoriteId] = React.useState(null);
   const [cartData, setCartdata] = React.useState([]);
+  const [productNameFilter, setProductNameFilter] = React.useState("");
+
   const navigate = useNavigate();
+
+  const filteredFavorites = favoritesData.filter(favorite =>
+  favorite.product?.productName.toLowerCase().includes(productNameFilter.toLowerCase())
+);
+
 
   const handleDeleteOpen = (favoriteId) => {
     setSelectedfavoriteId(favoriteId);
@@ -112,7 +118,7 @@ function Favorites() {
 
         setCartdata(updatedCart);
       } else {
-        enqueueSnackbar("Data çekerken hata ", { variant: "error" });
+        // enqueueSnackbar("Data çekerken hata ", { variant: "error" });
         console.log("Data çekerken hata: ");
       }
     } catch (error) {
@@ -121,7 +127,7 @@ function Favorites() {
         console.log(error);
         throw error;
       } else {
-        enqueueSnackbar("Sepete eklerken hata:", { variant: "error" });
+        // enqueueSnackbar("Sepete eklerken hata:", { variant: "error" });
         console.log("Sepete eklerken hata:  ", error);
       }
     }
@@ -156,7 +162,7 @@ function Favorites() {
         console.log(error);
         // throw error;
       } else {
-        enqueueSnackbar("Data çekerken hata:", { variant: "error" });
+        // enqueueSnackbar("Data çekerken hata:", { variant: "error" });
         console.log("Data çekerken hata:  ", error);
       }
     }
@@ -273,6 +279,14 @@ function Favorites() {
     }
   };
 
+    const handleCardClick = (productId) => {
+    const locationUrl = window.location.pathname;
+    const url = `${locationUrl}/${productId}`;
+
+    navigate(url);
+  };
+
+
   return (
     <>
       <AlertDialog
@@ -289,128 +303,205 @@ function Favorites() {
       />
 
       <HomeAppBar />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          marginLeft: "50px",
-          marginTop: "15px",
-          marginBottom: "10px",
-        }}
-      >
-        <Typography variant="h5">
-          <FavoriteIcon sx={{ width: "60px", color: "#1e90ff" }} />
-          Favorilerim
-        </Typography>
-        <HandleArrangementSelect />
-      </div>
-      <div style={{ display: "flex", flexWrap: "wrap" }}>
-        {favoritesData &&
-          favoritesData.map((favorite, index) => (
-            <React.Fragment key={favorite.favoriteId}>
-              {favorite.product && index % 4 === 0 && index !== 0 && (
-                <div style={{ width: "100%", marginBottom: "25px" }}></div>
-              )}
-              {favorite.product && (
-                <Tooltip
-                  title={favorite.product.productName}
-                  followCursor
-                  style={{ width: "300px" }}
+ <Box
+  sx={{
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap",
+    mt: 3,
+    mb: 2,
+    px: 3,
+  }}
+>
+  {/* Sol: Filtreleme */}
+  <Box sx={{ flexShrink: 0, width: { xs: "100%", sm: "250px" }, mb: { xs: 2, sm: 0 } }}>
+    <TextField
+      placeholder="Ürün adına göre filtrele"
+      variant="outlined"
+      value={productNameFilter}
+      onChange={(e) => setProductNameFilter(e.target.value)}
+      sx={{
+        borderRadius: "12px",
+        backgroundColor: "#fff",
+        width: "100%",
+        "& .MuiOutlinedInput-root": {
+          borderRadius: "12px",
+        },
+      }}
+      InputProps={{
+        sx: {
+          fontSize: "14px",
+        },
+      }}
+    />
+  </Box>
+
+  {/* Orta: Başlık */}
+  <Box sx={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
+    <Typography
+      variant="h5"
+      sx={{
+        color: "#1e90ff",
+        fontWeight: 600,
+        display: "inline-flex",
+        alignItems: "center",
+      }}
+    >
+      <FavoriteIcon sx={{ mr: 1, verticalAlign: "middle" }} />
+      Favorilerim
+    </Typography>
+  </Box>
+
+  {/* Sağ: Sıralama */}
+ <FormControl
+    sx={{
+      backgroundColor: "#fff",
+      borderRadius: "12px",
+    }}
+  >
+    <InputLabel id="arrangement-select-label">Sıralama</InputLabel>
+    <Select
+      labelId="arrangement-select-label"
+      id="arrangement-select"
+      value={arrangement}
+      label="Sıralama"
+      onChange={handleChangeArrangement}
+    >
+      <MenuItem value={10}>Önerilen Sıralama</MenuItem>
+      <MenuItem value={20}>En Çok Satanlar</MenuItem>
+      <MenuItem value={30}>En Çok Beğenilenler</MenuItem>
+      <MenuItem value={40} onClick={sortByLowestPrice}>
+        En Düşük Fiyat
+      </MenuItem>
+      <MenuItem value={50} onClick={sortByHighestPrice}>
+        En Yüksek Fiyat
+      </MenuItem>
+      <MenuItem value={60}>En Çok Beğenilenler</MenuItem>
+      <MenuItem value={70} onClick={sortByNewestProducts}>
+        En Yeniler
+      </MenuItem>
+    </Select>
+  </FormControl> 
+</Box>
+
+ <Grid container spacing={3} justifyContent="flex-start" sx={{ paddingX: 3 }}>
+  {filteredFavorites.length === 0 ? (
+    <Box
+      sx={{
+        width: "100%",
+        height: "50vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        color: "text.secondary",
+        fontSize: "1.2rem",
+      }}
+    >
+      {/* Dilersen buraya bir ikon veya resim de ekleyebilirsin */}
+      <FavoriteBorderIcon sx={{ fontSize: 80, mb: 2, color: "lightgray" }} />
+      Favori ürün bulunamadı.
+    </Box>
+  ) : (
+    filteredFavorites.map((favorite) =>
+      favorite.product ? (
+        <Grid
+          item
+          key={favorite.favoriteId}
+          xs={12}
+          sm={6}
+          md={3}
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
+          <Tooltip title={favorite.product.productName} followCursor>
+            <Card
+              onMouseEnter={() => handleCardHover(favorite.product.productId)}
+              onMouseLeave={handleCardLeave}
+              onClick={() => handleCardClick(favorite.product.productId)}
+              sx={{
+                maxWidth: "%",
+                boxShadow:
+                  hoveredCard === favorite.product.productId
+                    ? "0 0 10px rgba(0,0,0,0.5)"
+                    : "none",
+                marginTop: 3,
+                width: "100%",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <CardHeader title={favorite.product.productName} />
+              <CardMedia
+                component="img"
+                height="194"
+                image={
+                  favorite.product.productImages &&
+                  favorite.product.productImages[0]
+                }
+                alt={favorite.product.productName}
+                style={{
+                  height: 160,
+                  objectFit: "contain",
+                  padding: "10px",
+                }}
+              />
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="body2" color="text.secondary">
+                  {favorite.product.description}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" mt={1}>
+                  <strong>Fiyat: {favorite.product.price} TL</strong>
+                </Typography>
+              </CardContent>
+
+              <CardActions disableSpacing>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => handleDeleteOpen(favorite.favoriteId)}
                 >
-                  <Card
-                    key={favorite.product.productId}
-                    onMouseEnter={() =>
-                      handleCardHover(favorite.product.productId)
-                    }
-                    onMouseLeave={handleCardLeave}
-                    sx={{
-                      maxWidth: 260,
-                      margin: "0 auto 10px",
-                      marginLeft: "50px",
-                      marginTop: "25px",
-                      boxShadow:
-                        hoveredCard === favorite.product.productId
-                          ? "0 0 10px rgba(0,0,0,0.5)"
-                          : "none",
-                    }}
-                  >
-                    <CardHeader
-                 
-                      title={favorite.product.productName}
-                    />
-                    <CardMedia
-                      component="img"
-                      height="194"
-                      image={
-                        favorite.product.productImages &&
-                        favorite.product.productImages[0]
-                      }
-                      alt={"Paella dish"}
-                      style={{ objectFit: "cover" }}
-                    />
-                    <CardContent>
-                      <Typography variant="body2" color="text.secondary">
-                        {favorite.product.description}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        <strong>Fiyat: {favorite.product.price} TL</strong>
-                      </Typography>
-                    </CardContent>
-                    <CardActions disableSpacing>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => handleDeleteOpen(favorite.favoriteId)}
-                      >
-                        <RemoveCircleOutlineOutlined />
-                      </IconButton>
-                      <IconButton
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleAddCardClick(favorite.product.productId);
-                        }}
-                      >
-                        {" "}
-                        <AddShoppingCartOutlined
-                          color={handleAddCardIconColor(
-                            favorite.product.productId
-                          )}
-                          sx={{ marginLeft: "5px" }}
-                        />
-                      </IconButton>
-                      <ExpandMore
-                        expand={favorite.expanded}
-                        onClick={() =>
-                          handleExpandClick(favorite.product.productId)
-                        }
-                        aria-expanded={favorite.expanded}
-                        aria-label="show more"
-                      >
-                        <ExpandMoreIcon />
-                      </ExpandMore>
-                    </CardActions>
-                    <Collapse
-                      in={favorite.expanded}
-                      timeout="auto"
-                      unmountOnExit
-                    >
-                      <CardContent>
-                        <Typography sx={{ color: "red" }}>
-                          <strong>
-                            Stok: {favorite.product.stockQuantity}
-                          </strong>
-                        </Typography>
-                        <br />
-                        <Typography paragraph>
-                          {favorite.product.productInfo}
-                        </Typography>
-                      </CardContent>
-                    </Collapse>
-                  </Card>
-                </Tooltip>
-              )}
-            </React.Fragment>
-          ))}
-      </div>
+                  <RemoveCircleOutlineOutlined />
+                </IconButton>
+                <IconButton
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleAddCardClick(favorite.product.productId);
+                  }}
+                >
+                  <AddShoppingCartOutlined
+                    color={handleAddCardIconColor(favorite.product.productId)}
+                    sx={{ ml: 1 }}
+                  />
+                </IconButton>
+                <ExpandMore
+                  expand={favorite.expanded}
+                  onClick={() =>
+                    handleExpandClick(favorite.product.productId)
+                  }
+                  aria-expanded={favorite.expanded}
+                  aria-label="show more"
+                >
+                  <ExpandMoreIcon />
+                </ExpandMore>
+              </CardActions>
+
+              <Collapse in={favorite.expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Typography sx={{ color: "red" }}>
+                    <strong>Stok: {favorite.product.stockQuantity}</strong>
+                  </Typography>
+                  <br />
+                  <Typography paragraph>{favorite.product.productInfo}</Typography>
+                </CardContent>
+              </Collapse>
+            </Card>
+          </Tooltip>
+        </Grid>
+      ) : null
+    )
+  )}
+</Grid>
+
     </>
   );
 }
