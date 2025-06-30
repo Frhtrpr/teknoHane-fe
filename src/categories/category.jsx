@@ -456,7 +456,7 @@ function Category() {
   container
   spacing={3}
   justifyContent={productsByCategoryIdData.length === 1 ? "flex-start" : "center"}
-  sx={{ paddingX: 3 }}
+  sx={{ paddingX: 3 ,mb:3}}
 >
   {productsByCategoryIdData
     .filter((product) =>
