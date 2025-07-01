@@ -99,7 +99,6 @@ export default function LoginForm() {
   const [phone, setPhone] = React.useState("");
   const [gender, setGender] = useState("male");
   const [birthday, setBirthday] = useState(null);
-  const [securityCode, setSecurityCode] = useState("");
   const [agreementChecked, setAgreementChecked] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [epostaError, setEpostaError] = React.useState(false);
@@ -150,17 +149,14 @@ export default function LoginForm() {
         return;
       }
 
-      if (!/^\d{6}$/.test(securityCode)) {
-  enqueueSnackbar("Güvenlik kodu 6 haneli ve sadece rakamlardan oluşmalıdır.", {
-    variant: "error",
-  });
-  return;
-}
       const newUser = {
+        firstName,
+        lastName,
         eposta,
         password,
         phone,
         gender,
+        birthday
       };
 
       await UsersService.saveUser(newUser);
@@ -186,13 +182,6 @@ export default function LoginForm() {
     setOpenDialog(false);
   };
 
-  const onSuccess = (res) => {
-    console.llog("Google ile giriş yapıldı", res.profileObj);
-  };
-
-  const onFailure = (res) => {
-    console.log("Google ile giriş yapılamadı", res);
-  };
 
   return (
     <>
@@ -302,7 +291,7 @@ export default function LoginForm() {
             </LocalizationProvider>
 
           <Grid container spacing={2}>
-  <Grid item xs={8}>
+  <Grid item xs={12}>
     <StyledTextField
       variant="outlined"
       margin="normal"
@@ -317,20 +306,7 @@ export default function LoginForm() {
       onChange={(e) => setPhone(e.target.value)}
     />
   </Grid>
-  <Grid item xs={4}>
-    <StyledTextField
-      variant="outlined"
-      margin="normal"
-      required
-      fullWidth
-      id="securityCode"
-      label="Güvenlik Kodu"
-      name="securityCode"
-      size="small"
-      value={securityCode}
-      onChange={(e) => setSecurityCode(e.target.value)}
-    />
-  </Grid>
+
 </Grid>
 
            <Grid container spacing={2}>

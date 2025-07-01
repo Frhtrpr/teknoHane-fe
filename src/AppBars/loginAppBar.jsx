@@ -9,6 +9,8 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import teknoHaneLogo from '../image/teknoHaneLogo.png';
+
 
 const settings = [
   { label: "Çıkış", url: "/giris" },
@@ -42,27 +44,39 @@ function ResponsiveAppBar() {
   <Toolbar
     disableGutters
     sx={{
-      px: 2, // Hem sol hem sağdan boşluk (padding x-axis)
+      px: 2, 
       display: "flex",
       justifyContent: "space-between",
     }}
   >
-    {/* Sol taraf - Logo */}
-    <Typography
-      variant="h6"
-      noWrap
+    <Box
       component="a"
       href="/teknoHane"
       sx={{
-        fontFamily: "monospace",
-        fontWeight: 700,
-        letterSpacing: ".3rem",
-        color: "inherit",
-        textDecoration: "none",
+        mr: 2,
+        display: { xs: 'none', md: 'flex' },
+        px: 4,
+        textDecoration: 'none',
+        height: 64,
+        overflow: 'visible', 
+        position: 'relative',
       }}
     >
-      TeknoHane
-    </Typography>
+      <img
+        src={teknoHaneLogo}
+        alt="TeknoHane Logo"
+        style={{
+          height: 95,    
+          width: 'auto',
+          position: 'absolute',
+          top: '55%',
+          left: 0,
+          transform: 'translateY(-50%)', 
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}
+      />
+    </Box>
 
     {/* Sağ taraf - Avatar */}
     <Box sx={{ flexGrow: 0 }}>

@@ -12,8 +12,13 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import AddProductDialog from "../AppBarColumns/addProductDialog";
+import teknoHaneLogo from '../image/teknoHaneLogo.png';
+
+
 
 const pages = ["Siparişlerim", "Favorilerim"];
 const settings = [
@@ -21,10 +26,11 @@ const settings = [
   { label: "Çıkış", url: "/giris" },
 ];
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar({refreshProducts}) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [isHovered, setIsHovered] = React.useState(false);
+  const [openAddProductDialog,setOpenAddProductDialog] =React.useState(false);
   const navigate = useNavigate();
    const firstname = localStorage.getItem("firstName") || "";
   const lastname = localStorage.getItem("lastName") || "";
@@ -78,26 +84,37 @@ function ResponsiveAppBar() {
   };
 
   return (
+    <>
     <AppBar position="static">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/teknoHane"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-              px:3
-            }}
-          >
-          TeknoHane
-          </Typography>
+       <Box
+      component="a"
+      href="/teknoHane"
+      sx={{
+        mr: 2,
+        display: { xs: 'none', md: 'flex' },
+        px: 4,
+        textDecoration: 'none',
+        height: 64,
+        overflow: 'visible', 
+        position: 'relative',
+      }}
+    >
+      <img
+        src={teknoHaneLogo}
+        alt="TeknoHane Logo"
+        style={{
+          height: 95,    
+          width: 'auto',
+          position: 'absolute',
+          top: '55%',
+          left: 0,
+          transform: 'translateY(-50%)', 
+          pointerEvents: 'none',
+          userSelect: 'none',
+        }}
+      />
+    </Box>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -141,9 +158,9 @@ function ResponsiveAppBar() {
     flexGrow: 1,
     display: "flex",
     alignItems: "center",
-    justifyContent: "flex-start", // sola yasla
-    gap: 2, // kutu ve butonlar arası boşluk
-    ml: 3, // sola boşluk
+    justifyContent: "flex-start",
+    gap: 2, 
+    ml: 3, 
   }}
 >
   {/* Arama Kutusu */}
@@ -182,7 +199,6 @@ function ResponsiveAppBar() {
     />
   </Box>
 
-  {/* Sayfa Butonları */}
   <Box
     sx={{
       display: { xs: "none", md: "flex" },
@@ -215,6 +231,32 @@ function ResponsiveAppBar() {
     ))}
   </Box>
 </Box>
+<Button
+  variant="outlined"
+  startIcon={<AddBoxIcon />}
+  onClick={() => setOpenAddProductDialog(true)}
+  sx={{
+    marginTop:0.5,
+    textTransform: 'none',
+    borderRadius: '10px',
+    fontWeight: 600,
+    fontSize: '0.875rem',     
+    color: 'white',
+    borderColor: 'white',
+    backgroundColor: '#1976d2',
+    padding: '2px 8px',        
+    '&:hover': {
+      backgroundColor: '#115293',
+      borderColor: '#115293',
+      boxShadow: '0 4px 12px rgba(21, 101, 192, 0.5)',
+    },
+  }}
+>
+  New Product
+</Button>
+
+
+
        <IconButton
             sx={{
               color: isHovered ? "blue" : "white",
@@ -228,7 +270,8 @@ function ResponsiveAppBar() {
             <ShoppingCartIcon sx={{ width: "20px" }} />
             Sepetim
           </IconButton>{" "}
-          <Box sx={{ flexGrow: 0 ,              px:3
+          <Box sx={{ flexGrow: 0 ,       
+                 px:3
 }}>
            <Tooltip title="Ayarlar">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -265,6 +308,12 @@ function ResponsiveAppBar() {
           </Box>
         </Toolbar>
     </AppBar>
+    <AddProductDialog
+  open={openAddProductDialog}
+  onClose={() => setOpenAddProductDialog(false)}
+  refreshProducts={refreshProducts}
+/>
+    </>
   );
 }
 export default ResponsiveAppBar;

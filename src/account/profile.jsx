@@ -178,8 +178,8 @@ function Profile() {
               )}
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setShowEmailEdit(false)}>Kapat</Button>
-              <Button onClick={handleUpdateEmail}>Güncelle</Button>
+              <Button variant="outlined" color="secondary" sx={{ borderRadius: '6px' }} onClick={() => setShowEmailEdit(false)}>Kapat</Button>
+              <Button variant="outlined" sx={{ borderRadius: '6px' }} onClick={handleUpdateEmail}>Güncelle</Button>
             </DialogActions>
           </Dialog>
         </Box>
@@ -240,8 +240,8 @@ function Profile() {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setShowPhoneEdit(false)}>Kapat</Button>
-            <Button onClick={handleUpdatePhone}>Güncelle</Button>
+            <Button variant="outlined" color="secondary" sx={{ borderRadius: '6px' }} onClick={() => setShowPhoneEdit(false)}>Kapat</Button>
+            <Button variant="outlined" sx={{ borderRadius: '6px' }}  onClick={handleUpdatePhone}>Güncelle</Button>
           </DialogActions>
         </Dialog>
       </Box>
@@ -343,8 +343,8 @@ function Profile() {
               )}
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setShowGenderEdit(false)}>Kapat</Button>
-              <Button onClick={handlUpdateGender}>Güncelle</Button>
+              <Button  variant="outlined" color="secondary" sx={{ borderRadius: '6px' }} onClick={() => setShowGenderEdit(false)}>Kapat</Button>
+              <Button variant="outlined" sx={{ borderRadius: '6px' }} onClick={handlUpdateGender}>Güncelle</Button>
             </DialogActions>
           </Dialog>
         </Box>
@@ -398,8 +398,8 @@ function BirthdayEditPopup() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowBirthdayEdit(false)}>Kapat</Button>
-          <Button onClick={handleUpdateBirthday}>Güncelle</Button>
+          <Button variant="outlined" color="secondary" sx={{ borderRadius: '6px' }} onClick={() => setShowBirthdayEdit(false)}>Kapat</Button>
+          <Button  variant="outlined" sx={{ borderRadius: '6px' }} onClick={handleUpdateBirthday}>Güncelle</Button>
         </DialogActions>
       </Dialog>
     </Box>
@@ -516,8 +516,8 @@ function BirthdayEditPopup() {
             </DialogContent>
             <DialogActions>
               {" "}
-              <Button onClick={() => setShowPasswordEdit(false)}>Kapat</Button>
-              <Button onClick={handleResetPassword}>Güncelle</Button>
+              <Button variant="outlined" color="secondary" sx={{ borderRadius: '6px' }} onClick={() => setShowPasswordEdit(false)}>Kapat</Button>
+              <Button variant="outlined" sx={{ borderRadius: '6px' }} onClick={handleResetPassword}>Güncelle</Button>
             </DialogActions>
           </Dialog>
         </Box>

@@ -50,7 +50,6 @@ const StyledButton = styled(Button)`
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [securityCode,setSecurityCode] = useState(null)
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
@@ -83,14 +82,8 @@ export default function ForgotPasswordForm() {
         return;
       }
           
-      if (!/^\d{6}$/.test(securityCode)) {
-      enqueueSnackbar("Güvenlik kodu 6 haneli ve sadece rakamlardan oluşmalıdır.", {
-        variant: "error",
-      });
-      return;
-    }
 
-      await UsersService.forgotResetPassword(email, password,securityCode);
+      await UsersService.resetPassword(email, password);
 
       enqueueSnackbar("Şifreniz başarıyla değiştirildi.", {
         variant: "success",
@@ -99,7 +92,6 @@ export default function ForgotPasswordForm() {
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      setSecurityCode(null)
     } catch (error) {
       console.error("Failed to update password:", error);
       enqueueSnackbar(
@@ -198,24 +190,6 @@ export default function ForgotPasswordForm() {
                 ),
               }}
             />
-            <StyledTextField
-  variant="outlined"
-  margin="normal"
-  required
-  id="securityCode"
-  label="Güvenlik Kodu"
-  name="securityCode"
-  value={securityCode}
-  onChange={(e) => setSecurityCode(e.target.value)}
-  size="small"
-  sx={{
-    width: "150px",
-    margin: "10px auto",   
-    display: "block",     
-    marginTop:-0.5
-  }}
-  inputProps={{ maxLength: 6, inputMode: "numeric", pattern: "[0-9]*" }}
-/>
 
             <StyledButton
               type="submit"

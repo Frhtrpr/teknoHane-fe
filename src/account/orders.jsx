@@ -83,14 +83,12 @@ function Orders() {
  return (
   <>
     <AlertDialog
-      open={deleteAlertOpen}
-      setOpen={setDeleteAlertOpen}
-      handleAggree={handleDeleteOrder}
-      message={`Order "${
-        orderByUserIdData.find((order) => order.orderId === selectedOrderId)
-          ?.orderId
-      }" will delete?`}
-    />
+  open={deleteAlertOpen}
+  setOpen={setDeleteAlertOpen}
+  handleAggree={handleDeleteOrder}
+  message="Kaldırmak istediğinize emin misiniz?"
+/>
+
     <AccountAppBar />
     <Box sx={{ p: 3 }}>
       {orderByUserIdData.length === 0 ? (

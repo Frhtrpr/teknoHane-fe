@@ -93,8 +93,7 @@ function Category() {
     fetchCategoryData();
   }, []);
 
-  const categoryId = window.location.pathname.split("/").pop();
-  useEffect(() => {
+  const categoryId = window.location.pathname.split("/").pop();  
     const fetchProductsByCategoryIdData = async () => {
       try {
         const productData = await ProductsService.getProductByCategoryId(
@@ -109,6 +108,8 @@ function Category() {
         console.error("Data çekerken hata", error);
       }
     };
+  useEffect(() => {
+
     fetchProductsByCategoryIdData();
   }, []);
 
@@ -225,38 +226,6 @@ function Category() {
     setProductsByCategoryIdData(favoriteCounts.slice().sort((a, b) => b.favoriteCount - a.favoriteCount));
   };
 
-  const HandleArrangementSelect = () => {
-    return (
-      <Box sx={{ minWidth: 130, marginLeft: "1170px", marginBottom: "15px" }}>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Sıralama</InputLabel>
-          <Select
-            labelId="arrangement-simple-select-label"
-            id="arrangement-simple-select"
-            value={arrangemet}
-            defaultValue={10}
-            label="Sıralama"
-            onChange={handleChangeArrangement}
-          >
-            <MenuItem value={10} onClick={sortRandomArrangement}>
-              Önerilen Sıralama
-            </MenuItem>
-            <MenuItem value={30} onClick={sortByFavorites}>En Çok Beğenilenler </MenuItem>
-            <MenuItem value={40} onClick={sortByLowestPrice}>
-              En Düşük Fiyat
-            </MenuItem>
-            <MenuItem value={50} onClick={sortByHighestPrice}>
-              En Yüksek Fiyat
-            </MenuItem>
-            <MenuItem value={70} onClick={sortByNewProduct}>
-              En Yeniler
-            </MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-    );
-  };
-
   const handleProductNameFilterChange = (event) => {
   const value = event.target.value.toLowerCase();
   setProductNameFilter(value);
@@ -366,7 +335,7 @@ function Category() {
 
   return (
     <>
-      <HomeAppBar />
+      <HomeAppBar refreshProducts={fetchProductsByCategoryIdData} />
 <Box
   sx={{
     display: "flex",
@@ -378,7 +347,6 @@ function Category() {
     px: 3,
   }}
 >
-  {/* Sol: Filtreleme inputu */}
   <TextField
     placeholder="Ürün adına göre filtrele"
     variant="outlined"
@@ -400,7 +368,6 @@ function Category() {
     }}
   />
 
-  {/* Orta: Başlık */}
   <Typography
     variant="h6"
     sx={{
@@ -416,7 +383,6 @@ function Category() {
       : `"${categoryData.categoryName}" kategorisi için sonuçlar listeleniyor`}
   </Typography>
 
-  {/* Sağ: Sıralama kutusu */}
   <FormControl
     sx={{
       minWidth: 180,

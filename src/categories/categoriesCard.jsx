@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 
 function ProductCard({ name, description, imageUrl, url }) {
@@ -9,8 +8,8 @@ function ProductCard({ name, description, imageUrl, url }) {
       <Card style={{ minWidth: "200px" }}>
         <CardMedia
           component="img"
-          height="200" // Resmin yüksekliği
-          width="100%" // Resmin genişliği kartın genişliğine eşit olacak şekilde ayarlandı
+          height="200" 
+          width="100%" 
           image={imageUrl}
           alt={name}
         />

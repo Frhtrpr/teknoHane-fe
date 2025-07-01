@@ -147,7 +147,7 @@ function Favorites() {
             );
             return {
               ...favorite,
-              product: product, // Ürün bilgisini favori verisine ekle
+              product: product, 
             };
           })
         );
@@ -199,7 +199,7 @@ function Favorites() {
     setFavoritesData((prevFavorites) =>
       prevFavorites
         .slice()
-        .sort((a, b) => b.productId.price - a.productId.price)
+        .sort((a, b) => b.product.price - a.product.price)
     );
   };
 
@@ -207,63 +207,36 @@ function Favorites() {
     setFavoritesData((prevFavorites) =>
       prevFavorites
         .slice()
-        .sort((a, b) => a.productId.price - b.productId.price)
+        .sort((a, b) => a.product.price - b.product.price)
     );
   };
 
   const sortByNewestProducts = () => {
     setFavoritesData((prevFavorites) =>
       prevFavorites.slice().sort((a, b) => {
-        const dateA = new Date(a.productId.creationDate);
-        const dateB = new Date(b.productId.creationDate);
+        const dateA = new Date(a.product.creationDate);
+        const dateB = new Date(b.product.creationDate);
 
         if (isNaN(dateA) || isNaN(dateB)) {
           return 1;
         }
 
-        return dateB - dateA; // Sort in descending order (newest first)
+        return dateB - dateA;
       })
     );
   };
 
-  const HandleArrangementSelect = () => {
-    return (
-      <Box
-        sx={{
-          minWidth: 130,
-          marginLeft: "1060px",
-          marginBottom: "15px",
-          marginTop: "15px",
-        }}
-      >
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Sıralama</InputLabel>
-          <Select
-            labelId="arrangement-simple-select-label"
-            id="arrangement-simple-select"
-            value={arrangement}
-            defaultValue={10}
-            label="Sıralama"
-            onChange={handleChangeArrangement}
-          >
-            <MenuItem value={10}>Önerilen Sıralama</MenuItem>
-            <MenuItem value={20}>En Çok Satanlar</MenuItem>
-            <MenuItem value={30}>En Çok Beğenilenler</MenuItem>
-            <MenuItem value={40} onClick={sortByLowestPrice}>
-              En Düşük Fiyat
-            </MenuItem>
-            <MenuItem value={50} onClick={sortByHighestPrice}>
-              En Yüksek Fiyat
-            </MenuItem>
-            <MenuItem value={60}>En Çok Beğenilenler</MenuItem>
-            <MenuItem value={70} onClick={sortByNewestProducts}>
-              En Yeniler
-            </MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-    );
-  };
+  const sortRandomArrangement = () => {
+  setFavoritesData((prevFavorites) => {
+    const shuffled = [...prevFavorites];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  });
+};
+
 
   const handleDeleteFavorite = async () => {
     try {
@@ -293,13 +266,8 @@ function Favorites() {
         open={deleteAlertOpen}
         setOpen={setDeleteAlertOpen}
         handleAggree={() => handleDeleteFavorite()}
-        message={
-          'Favorites "' +
-          favoritesData.find(
-            (favorite) => favorite.favoriteId === selectedFavoriteId
-          ) +
-          '" will delete?'
-        }
+      message="Kaldırmak istediğinize emin misiniz?"
+
       />
 
       <HomeAppBar />
@@ -336,7 +304,6 @@ function Favorites() {
     />
   </Box>
 
-  {/* Orta: Başlık */}
   <Box sx={{ flexGrow: 1, flexBasis: 0, textAlign: "center" }}>
     <Typography
       variant="h5"
@@ -352,36 +319,36 @@ function Favorites() {
     </Typography>
   </Box>
 
-  {/* Sağ: Sıralama */}
- <FormControl
+  <FormControl
     sx={{
+      minWidth: 180,
       backgroundColor: "#fff",
       borderRadius: "12px",
+      ml: { xs: 0, sm: 2 },
     }}
   >
-    <InputLabel id="arrangement-select-label">Sıralama</InputLabel>
+    <InputLabel id="arrangement-simple-select-label">Sıralama</InputLabel>
     <Select
-      labelId="arrangement-select-label"
-      id="arrangement-select"
+      labelId="arrangement-simple-select-label"
+      id="arrangement-simple-select"
       value={arrangement}
       label="Sıralama"
       onChange={handleChangeArrangement}
     >
-      <MenuItem value={10}>Önerilen Sıralama</MenuItem>
-      <MenuItem value={20}>En Çok Satanlar</MenuItem>
-      <MenuItem value={30}>En Çok Beğenilenler</MenuItem>
-      <MenuItem value={40} onClick={sortByLowestPrice}>
+      <MenuItem value={10} onClick={sortRandomArrangement}>
+        Önerilen Sıralama
+      </MenuItem>
+      <MenuItem value={20} onClick={sortByLowestPrice}>
         En Düşük Fiyat
       </MenuItem>
-      <MenuItem value={50} onClick={sortByHighestPrice}>
+      <MenuItem value={30} onClick={sortByHighestPrice}>
         En Yüksek Fiyat
       </MenuItem>
-      <MenuItem value={60}>En Çok Beğenilenler</MenuItem>
-      <MenuItem value={70} onClick={sortByNewestProducts}>
+      <MenuItem value={40} onClick={sortByNewestProducts}>
         En Yeniler
       </MenuItem>
     </Select>
-  </FormControl> 
+  </FormControl>
 </Box>
 
  <Grid container spacing={3} justifyContent="flex-start" sx={{ paddingX: 3 }}>

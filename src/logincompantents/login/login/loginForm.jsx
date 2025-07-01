@@ -110,7 +110,7 @@ export default function LoginForm() {
             sx={{ display: "flex", alignItems: "center" }}
           >
             <StoreIcon sx={{ color: "#007bff", marginRight: "5px" }} />{" "}
-            TeknoHane'ye giriş Yap!
+            TeknoHane'ye Giriş Yap!
           </StyledTypography>
 
           <StyledForm onSubmit={handleSubmit}>

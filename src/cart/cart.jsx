@@ -70,7 +70,6 @@ function Basket() {
     try {
       const token = localStorage.getItem("jwtToken");
       if (token) {
-        // Save the orders
         await OrdersService.saveOrders(productIds);
         navigate("/siparişlerim")
         
@@ -156,11 +155,8 @@ function Basket() {
         open={deleteAlertOpen}
         setOpen={setDeleteAlertOpen}
         handleAggree={() => handleDeleteCart()}
-        message={
-          'Carts "' +
-          cartsByUserData.find((cart) => cart.cartId === selectedCartId) +
-          '" will delete?'
-        }
+        message="Kaldırmak istediğinize emin misiniz?"
+
       />
       <HomeAppBar />
    {cartsByUserData.map((cartItem) => (
@@ -250,10 +246,10 @@ function Basket() {
     handleAddOrderClick(productIds);
   }}
   sx={{
-    px: 2.5,               // Yatay padding azaltıldı (3'ten 2'ye)
-    py: 1,               // Dikey padding azaltıldı (1.5'tan 1'e)
+    px: 2.5,               
+    py: 1,              
     fontWeight: "bold",
-    fontSize: "0.9rem",  // Yazı biraz küçüldü
+    fontSize: "0.9rem",  
     borderRadius: 3,
     background: "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
     boxShadow: "0 3px 7px 2px rgba(33, 203, 243, .4)",
